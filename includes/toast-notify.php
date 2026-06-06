@@ -1,4 +1,12 @@
-<?php 
+<!-- 
+Usage example
+$_SESSION['toast-message'] = "Welcome Back!";
+$_SESSION['toast-icon'] = "success";
+header("Location: index.php");
+exit(); -->
+
+
+<?php
 // Ensure session is started if not already done in the parent script
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -11,7 +19,7 @@ if (isset($_SESSION['toast-message'])) {
 
     unset($_SESSION['toast-message']);
     unset($_SESSION['toast-icon']);
-    
+
     // Output wrapped inside an executable script block
     echo "<script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -70,14 +78,37 @@ if (isset($_SESSION['toast-message'])) {
     }
 
     /* Types */
-    .toast.success { background: linear-gradient(135deg, #16a34a, #22c55e); }
-    .toast.error { background: linear-gradient(135deg, #dc2626, #ef4444); }
-    .toast.warning { background: linear-gradient(135deg, #d97706, #f59e0b); }
-    .toast.info { background: linear-gradient(135deg, #2563eb, #3b82f6); }
+    .toast.success {
+        background: linear-gradient(135deg, #16a34a, #22c55e);
+    }
 
-    .toast-content { display: flex; align-items: center; gap: 12px; }
-    .toast-icon { font-size: 20px; }
-    .toast-message { font-size: 15px; font-weight: 500; }
+    .toast.error {
+        background: linear-gradient(135deg, #dc2626, #ef4444);
+    }
+
+    .toast.warning {
+        background: linear-gradient(135deg, #d97706, #f59e0b);
+    }
+
+    .toast.info {
+        background: linear-gradient(135deg, #2563eb, #3b82f6);
+    }
+
+    .toast-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .toast-icon {
+        font-size: 20px;
+    }
+
+    .toast-message {
+        font-size: 15px;
+        font-weight: 500;
+    }
+
     .toast-close {
         background: none;
         border: none;
@@ -87,19 +118,52 @@ if (isset($_SESSION['toast-message'])) {
         opacity: 0.8;
         transition: opacity 0.2s ease;
     }
-    .toast-close:hover { opacity: 1; }
+
+    .toast-close:hover {
+        opacity: 1;
+    }
 
     /* Exit */
-    .toast.hide { animation: slideOut 0.35s ease forwards; }
+    .toast.hide {
+        animation: slideOut 0.35s ease forwards;
+    }
 
-    @keyframes slideIn { to { transform: translateX(0); opacity: 1; } }
-    @keyframes slideOut { to { transform: translateX(120%); opacity: 0; } }
-    @keyframes progress { from { width: 100%; } to { width: 0%; } }
+    @keyframes slideIn {
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideOut {
+        to {
+            transform: translateX(120%);
+            opacity: 0;
+        }
+    }
+
+    @keyframes progress {
+        from {
+            width: 100%;
+        }
+
+        to {
+            width: 0%;
+        }
+    }
 
     /* Mobile */
     @media (max-width: 600px) {
-        #toast-container { top: 16px; right: 16px; left: 16px; }
-        .toast { min-width: auto; width: 100%; }
+        #toast-container {
+            top: 16px;
+            right: 16px;
+            left: 16px;
+        }
+
+        .toast {
+            min-width: auto;
+            width: 100%;
+        }
     }
 </style>
 <script>
@@ -137,20 +201,24 @@ if (isset($_SESSION['toast-message'])) {
             const autoCloseTimeout = setTimeout(() => {
                 removeToast(toastEl);
             }, duration);
-            
+
             toastEl.dataset.timeoutId = autoCloseTimeout;
         }
 
         function removeToast(toastEl) {
             if (!toastEl || toastEl.classList.contains("hide")) return;
             clearTimeout(toastEl.dataset.timeoutId);
-            
+
             toastEl.classList.add("hide");
             toastEl.addEventListener("animationend", () => {
                 toastEl.remove();
-            }, { once: true });
+            }, {
+                once: true
+            });
         }
 
-        return { show };
+        return {
+            show
+        };
     })();
 </script>
