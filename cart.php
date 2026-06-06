@@ -1,7 +1,10 @@
-<?php include('includes/dbconnect.php'); ?>
-<?php include('includes/common_functions.php'); ?>
-<?php include('includes/header.php'); ?>
-<?php include('includes/navbar.php'); ?>
+<?php
+session_start();
+include('includes/dbconnect.php');
+include('includes/common_functions.php');
+include('includes/header.php');
+include('includes/navbar.php');
+cart(); ?>
 <script>
   document.title = 'Cart - Ecom Marketplace';
 </script>

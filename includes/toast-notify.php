@@ -7,11 +7,15 @@ exit(); -->
 
 
 <?php
+
 // Ensure session is started if not already done in the parent script
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+if (function_exists('cart')) {
+    cart();
+}
 if (isset($_SESSION['toast-message'])) {
     // json_encode safely handles string quoting and prevents JS injection breaks
     $toastMessage = json_encode($_SESSION['toast-message']);

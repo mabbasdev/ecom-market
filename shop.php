@@ -6,6 +6,7 @@
   document.title = 'Shop - Ecom Marketplace';
 </script>
 
+
 <main class="main">
   <div class="section-box">
     <div class="breadcrumbs-div">

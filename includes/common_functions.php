@@ -1,4 +1,5 @@
 <?php
+$redirectUrl = strtok($_SERVER['REQUEST_URI'], '?');
 function get_categories($location)
 {
     global $con;
@@ -53,6 +54,8 @@ function get_categories($location)
 function get_products($qty, $location)
 {
     global $con;
+    global $redirectUrl;
+
 
     $sql = "SELECT * FROM `ecom_products` ";
 
@@ -131,7 +134,7 @@ function get_products($qty, $location)
                                         class="color-gray-500 price-line">$3225.6</span>
                                 </div>
                                 <div class="mt-20 box-btn-cart">
-                                    <a class="btn btn-cart" href="index.php?addtoCart=' . $product_id . '">Add To Cart</a>
+                                    <a class="btn btn-cart" href="' . $redirectUrl . '?addtoCart=' . $product_id . '">Add To Cart</a>
                                 </div>
                             </div>
                         </div>
@@ -156,7 +159,7 @@ function get_products($qty, $location)
                                     alt="Ecom"><span class="font-xs color-gray-500">(65)</span></div>
                                 <div class="price-info"><strong class="font-lg-bold color-brand-3 price-main">$' . $product_price . '</strong><span
                                     class="color-gray-500 price-line">$3225.6</span></div>
-                                <div class="mt-20 box-btn-cart"><a class="btn btn-cart" href="index.php?addtoCart=' . $product_id . '">Add To Cart</a></div>
+                                <div class="mt-20 box-btn-cart"><a class="btn btn-cart" href="' . $redirectUrl . '?addtoCart=' . $product_id . '">Add To Cart</a></div>
 
                             </div>
                             </div>
@@ -182,7 +185,7 @@ function get_products($qty, $location)
                                     alt="Ecom"><span class="font-xs color-gray-500">(65)</span></div>
                                 <div class="price-info"><strong class="font-lg-bold color-brand-3 price-main">$' . $product_price . '</strong><span
                                     class="color-gray-500 price-line">$3225.6</span></div>
-                                <div class="mt-20 box-btn-cart"><a class="btn btn-cart" href="index.php?addtoCart=' . $product_id . '">Add To Cart</a></div>
+                                <div class="mt-20 box-btn-cart"><a class="btn btn-cart" href="' . $redirectUrl . '?addtoCart=' . $product_id . '">Add To Cart</a></div>
 
                             </div>
                             </div>
@@ -259,7 +262,7 @@ function get_products($qty, $location)
                                                     src="images/star.svg" alt="Ecom"><span class="font-xs color-gray-500">(65)</span></div>
                                             <div class="price-info"><strong class="font-lg-bold color-brand-3 price-main">$' . $product_price . '</strong><span
                                                     class="color-gray-500 price-line">$3225.6</span></div>
-                                            <div class="mt-20 box-btn-cart"><a class="btn btn-cart" href="index.php?addtoCart=' . $product_id . '">Add To Cart</a>
+                                            <div class="mt-20 box-btn-cart"><a class="btn btn-cart" href="' . $redirectUrl . '?addtoCart=' . $product_id . '">Add To Cart</a>
                                             </div>
                                             
                                         </div>
@@ -296,7 +299,7 @@ function get_products($qty, $location)
                                     <li>3.1GHz 6-core 10th-generation Intel Core i5</li>
                                     <li>AMD Radeon Pro 5300 graphics</li>
                                 </ul>
-                                <div class="mt-20"><a class="btn btn-cart" href="index.php?addtoCart=' . $product_id . '">Add To Cart</a></div>
+                                <div class="mt-20"><a class="btn btn-cart" href="' . $redirectUrl . '?addtoCart=' . $product_id . '">Add To Cart</a></div>
                                 </div>
                             </div>
                             </div>
@@ -339,7 +342,7 @@ function get_products($qty, $location)
                                                     src="images/star.svg" alt="Ecom"><span class="font-xs color-gray-500">(65)</span></div>
                                             <div class="price-info"><strong class="font-lg-bold color-brand-3 price-main">$' . $product_price . '</strong><span
                                                     class="color-gray-500 price-line">$3225.6</span></div>
-                                            <div class="mt-20 box-btn-cart"><a class="btn btn-cart" href="index.php?addtoCart=' . $product_id . '">Add To Cart</a>
+                                            <div class="mt-20 box-btn-cart"><a class="btn btn-cart" href="' . $redirectUrl . '?addtoCart=' . $product_id . '">Add To Cart</a>
                                             </div>
                                             
                                         </div>
@@ -376,7 +379,7 @@ function get_products($qty, $location)
                                     <li>3.1GHz 6-core 10th-generation Intel Core i5</li>
                                     <li>AMD Radeon Pro 5300 graphics</li>
                                 </ul>
-                                <div class="mt-20"><a class="btn btn-cart" href="index.php?addtoCart=' . $product_id . '">Add To Cart</a></div>
+                                <div class="mt-20"><a class="btn btn-cart" href="' . $redirectUrl . '?addtoCart=' . $product_id . '">Add To Cart</a></div>
                                 </div>
                             </div>
                             </div>
@@ -420,7 +423,7 @@ function get_products($qty, $location)
                                     src="images/star.svg" alt="Ecom"><span class="font-xs color-gray-500">(65)</span></div>
                                 <div class="price-info"><strong class="font-lg-bold color-brand-3 price-main">$' . $product_price . '</strong><span
                                     class="color-gray-500 price-line">$3225.6</span></div>
-                                <div class="mt-20 box-btn-cart"><a class="btn btn-cart" href="index.php?addtoCart=' . $product_id . '">Add To Cart</a></div>
+                                <div class="mt-20 box-btn-cart"><a class="btn btn-cart" href="' . $redirectUrl . '?addtoCart=' . $product_id . '">Add To Cart</a></div>
 
                                 </div>
                             </div>
@@ -450,6 +453,7 @@ function get_products($qty, $location)
 function get_product_details($data)
 {
     global $con;
+    global $redirectUrl;
     if (isset($_GET['productID']) && filter_var($_GET['productID'], FILTER_VALIDATE_INT)) {
         $productID = (int)$_GET['productID'];
         $sql = "SELECT * FROM `ecom_products` WHERE `product_id` = ?";
@@ -656,7 +660,7 @@ function get_product_details($data)
                                 class="minus-cart"></span><span class="plus-cart"></span>
                         </div>
                         <div class="button-buy">
-                            <a class="btn btn-cart" href="index.php?addtoCart=' . $product_id . '">Add to cart</a><a class="btn btn-buy"
+                            <a class="btn btn-cart" href="' . $redirectUrl . '?addtoCart=' . $product_id . '">Add to cart</a><a class="btn btn-buy"
                                 href="shop-checkout.html">Buy now</a>
                         </div>
                     </div>
@@ -735,6 +739,8 @@ function get_product_details($data)
 function search_product()
 {
     global $con;
+    global $redirectUrl;
+
     if (isset($_GET['search_product'])) {
         $search_data_value = mysqli_real_escape_string($con, $_GET['search_product']);
         $search_query = "SELECT * FROM `ecom_products` WHERE `product_keywords` LIKE '%$search_data_value%' OR `product_title` LIKE '%$search_data_value%'";
@@ -764,7 +770,7 @@ function search_product()
                                         src="images/star.svg" alt="Ecom"><span class="font-xs color-gray-500">(65)</span></div>
                                 <div class="price-info"><strong class="font-lg-bold color-brand-3 price-main">$' . $product_price . '</strong><span
                                         class="color-gray-500 price-line">$3225.6</span></div>
-                                <div class="mt-20 box-btn-cart"><a class="btn btn-cart" href="index.php?addtoCart=' . $product_id . '">Add To Cart</a>
+                                <div class="mt-20 box-btn-cart"><a class="btn btn-cart" href="' . $redirectUrl . '?addtoCart=' . $product_id . '">Add To Cart</a>
                                 </div>
                                 
                             </div>
@@ -805,44 +811,74 @@ function search_product()
 function cart()
 {
     global $con;
+    $redirectUrl = strtok($_SERVER['REQUEST_URI'], '?');
+    // include('toast-notify.php');
+
     if (isset($_GET['addtoCart'])) {
         $getProductId = intval($_GET['addtoCart']);
         if (isset($_SESSION['username'])) {
             //logged in user
             $username = $_SESSION['username'];
-            $stmt = $con->prepare("SELECT user_id FROM `ecom_users` WHERE username=?");
+            $stmt = $con->prepare("SELECT `user_id` FROM `ecom_users` WHERE `user_username`=?");
             $stmt->bind_param('s', $username);
             $stmt->execute();
             $result = $stmt->get_result();
             $user_data = $result->fetch_assoc();
             $user_id = $user_data['user_id'];
+            // echo $user_id;
 
             // Check if the product already exist or not
-            $check_cart = $con->prepare("SELECT * FROM `ecom_cart-details` WHERE `user_id`=? AND `product_id`=?");
+            $check_cart = $con->prepare("SELECT * FROM `ecom_cart_details` WHERE `user_id`=? AND `product_id`=?");
             $check_cart->bind_param('ii', $user_id, $getProductId);
             $check_cart->execute();
             $result_check = $check_cart->get_result();
             if ($result_check->num_rows > 0) {
                 // update
-                $update = $con->prepare("UPDATE `ecom-cart-details` SET quantity=quantity+1 WHERE `user_id`=? AND `product_id`=?");
+                $update = $con->prepare("UPDATE `ecom_cart_details` SET quantity=quantity+1 WHERE `user_id`=? AND `product_id`=?");
                 $update->bind_param('ii', $user_id, $getProductId);
                 $update->execute();
                 $_SESSION['toast-message'] = "Quantity Updated";
                 $_SESSION['toast-icon'] = "info";
+
+                echo "<script>window.location.href='$redirectUrl'</script>";
+                exit();
             } else {
                 // insert
-                $insert = $con->prepare("INSERT INTO `ecom-cart-details` (`user_id`, `product_id`, `quantity`)
+                $insert = $con->prepare("INSERT INTO `ecom_cart_details` (`user_id`, `product_id`, `quantity`)
                 VALUES (?,?,1)");
                 $insert->bind_param('ii', $user_id, $getProductId);
                 $insert->execute();
+                // echo "Product Added Successfully L";
+
                 $_SESSION['toast-message'] = "Product Added Successfully";
                 $_SESSION['toast-icon'] = "success";
-                // header("Location: index.php");
-                // exit();
-
+                // header("Location: $redirectUrl");
+                echo "<script>window.location.href='$redirectUrl'</script>";
+                exit();
             }
         } else {
             // guest user
+            if (!isset($_SESSION['cart']))
+                $_SESSION['cart'] = [];
+
+            if (isset($_SESSION['cart'][$getProductId])) {
+                $_SESSION['cart'][$getProductId] += 1;
+                $_SESSION['toast-message'] = "Product Quantity Updated";
+                $_SESSION['toast-icon'] = "info";
+                // echo "Product Quantity Updated NL";
+                header("Location: $redirectUrl");
+            } else {
+                $_SESSION['cart'][$getProductId] = 1;
+                $_SESSION['toast-message'] = "Product Added Successfully";
+                $_SESSION['toast-icon'] = "success";
+                // echo "Product Added Successfully NL";
+                // header("Location: $redirectUrl");
+            }
+
+            $redirectUrl = strtok($_SERVER['REQUEST_URI'], '?');
+            echo "<script>window.location.href='$redirectUrl'</script>";
+            // echo $redirectUrl;
+            exit();
         }
     }
 }
