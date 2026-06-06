@@ -1,0 +1,218 @@
+
+Inserting product
+INSERT INTO `ecom_products` (`product_id`, `product_title`, `product_description`, `product_keywords`, `category_id`, `product_image_1`, `product_image_2`, `product_image_3`, `product_image_4`, `product_image_5`, `product_price`, `product_status`, `created_at`) VALUES (NULL, 'Samsung Galaxy S22 Ultra, 8K Camera & Video, Brightest Display Screen, S Pen Pro', 'The ultimate power player. The Galaxy S22 Ultra merges the legendary DNA of the Note series with the ground-breaking camera technology of the S series. Featuring the first built-in S Pen in a Galaxy S phone, our brightest display ever, and a pro-grade camera system that masters the night, it’s not just a smartphone—it\'s a productivity powerhouse.', 'Samsung, Galaxy, S22 Ultra', '2', 'img-gallery-1.jpg', 'img-gallery-2.jpg', 'img-gallery-3.jpg', 'img-gallery-4.jpg', 'img-gallery-5.jpg', '2499', 'active', current_timestamp());
+
+
+
+function get_products($qty, $location)
+{
+    global $con;
+
+    // --- STEP 1: DEFINE THE SQL QUERY BASED ON LOCATION ---
+    $sql = "SELECT * FROM `ecom_products` "; // Base query
+
+    switch ($location) {
+        case "home-trending":
+            // Assumes higher ID = Newer/Trending, or use 'product_views' if you have it
+            $sql .= "ORDER BY product_id DESC LIMIT $qty";
+            break;
+
+        case "home-top-rated":
+            // For now, sorting by price as a placeholder for "premium" items
+            $sql .= "ORDER BY product_price DESC LIMIT $qty";
+            break;
+
+        case "home-new-products-side":
+            // Latest additions
+            $sql .= "ORDER BY created_at DESC LIMIT $qty";
+            break;
+
+        case "shop-page-top":
+            // Range example: specific IDs 5 through 10
+            $sql .= "WHERE product_id BETWEEN 5 AND 10 LIMIT $qty";
+            break;
+
+        case "home-tabs":
+            // Randomize items for the tab section
+            $sql .= "ORDER BY RAND() LIMIT $qty";
+            break;
+
+        case "home-top-selling":
+        case "home-top-selling-side":
+            // Placeholder: sorting by ID, replace with 'sales_count' if column exists
+            $sql .= "ORDER BY product_id ASC LIMIT $qty";
+            break;
+
+        case "shop-page":
+            // Standard shop view
+            $sql .= "ORDER BY product_id DESC LIMIT $qty";
+            break;
+
+        default:
+            $sql .= "LIMIT $qty";
+            break;
+    }
+
+    $result = mysqli_query($con, $sql);
+
+    // --- STEP 2: LOOP AND DISPLAY HTML ---
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $product_id = $row['product_id'];
+            $product_title = $row['product_title'];
+            $product_price = $row['product_price'];
+            $product_image_1 = $row['product_image_1'];
+            
+            // Clean title for sidebars to prevent layout breaking
+            $short_title = (strlen($product_title) > 47) ? substr($product_title, 0, 47) . "..." : $product_title;
+
+            switch ($location) {
+                case "home-tabs":
+                case "shop-page":
+                    echo '
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                        <div class="card-grid-style-3">
+                            <div class="card-grid-inner">
+                                <div class="tools">
+                                    <a class="btn btn-trend btn-tooltip mb-10" href="#" aria-label="Trend"></a>
+                                    <a class="btn btn-wishlist btn-tooltip mb-10" href="shop-wishlist.html" aria-label="Add To Wishlist"></a>
+                                    <a class="btn btn-compare btn-tooltip mb-10" href="shop-compare.html" aria-label="Compare"></a>
+                                    <a class="btn btn-quickview btn-tooltip" aria-label="Quick view" href="#ModalQuickview" data-bs-toggle="modal"></a>
+                                </div>
+                                <div class="image-box">
+                                    <span class="label bg-brand-2">-17%</span>
+                                    <a href="product.php?productID=' . $product_id . '">
+                                        <img src="images/' . $product_image_1 . '" alt="Ecom" />
+                                    </a>
+                                </div>
+                                <div class="info-right">
+                                    <a class="font-xs color-gray-500" href="#">Brand</a><br />
+                                    <a class="color-brand-3 font-sm-bold" href="product.php?productID=' . $product_id . '">' . $product_title . '</a>
+                                    <div class="rating">
+                                        <img src="images/star.svg" alt="star" /><img src="images/star.svg" alt="star" /><img src="images/star.svg" alt="star" /><img src="images/star.svg" alt="star" /><img src="images/star.svg" alt="star" />
+                                        <span class="font-xs color-gray-500">(65)</span>
+                                    </div>
+                                    <div class="price-info">
+                                        <strong class="font-lg-bold color-brand-3 price-main">$' . $product_price . '</strong>
+                                        <span class="color-gray-500 price-line">$3225.6</span>
+                                    </div>
+                                    <div class="mt-20 box-btn-cart">
+                                        <a class="btn btn-cart" href="index.php?addtoCart=' . $product_id . '">Add To Cart</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>';
+                    break;
+
+                case "home-trending":
+                case "home-top-rated":
+                    echo '
+                    <div class="col-xl-3 col-lg-6 col-md-6">
+                        <div class="card-grid-style-3">
+                            <div class="card-grid-inner">
+                                <div class="image-box">
+                                    <a href="product.php?productID=' . $product_id . '"><img src="images/' . $product_image_1 . '" alt="Ecom"></a>
+                                </div>
+                                <div class="info-right">
+                                    <a class="color-brand-3 font-sm-bold" href="product.php?productID=' . $product_id . '">' . $product_title . '</a>
+                                    <div class="price-info">
+                                        <strong class="font-lg-bold color-brand-3 price-main">$' . $product_price . '</strong>
+                                    </div>
+                                    <div class="mt-20 box-btn-cart">
+                                        <a class="btn btn-cart" href="index.php?addtoCart=' . $product_id . '">Add To Cart</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>';
+                    break;
+
+                case "home-top-selling-side":
+                case "home-new-products-side":
+                    echo '
+                    <div class="card-grid-style-2 card-grid-none-border border-bottom mb-10">
+                        <div class="image-box">
+                            <a href="product.php?productID=' . $product_id . '"><img src="images/' . $product_image_1 . '" alt="Ecom"></a>
+                        </div>
+                        <div class="info-right">
+                            <a class="color-brand-3 font-xs-bold" href="product.php?productID=' . $product_id . '">' . $short_title . '</a>
+                            <div class="price-info">
+                                <strong class="font-md-bold color-brand-3 price-main">$' . $product_price . '</strong>
+                            </div>
+                        </div>
+                    </div>';
+                    break;
+
+                case "shop-page-top":
+                    echo '
+                    <div class="swiper-slide">
+                        <div class="card-grid-style-2">
+                            <div class="image-box">
+                                <a href="product.php?productID=' . $product_id . '"><img src="images/' . $product_image_1 . '" alt="Ecom"></a>
+                            </div>
+                            <div class="info-right">
+                                <a class="color-brand-3 font-sm-bold" href="product.php?productID=' . $product_id . '">' . $short_title . '</a>
+                                <div class="price-info">
+                                    <strong class="font-lg-bold color-brand-3 price-main">$' . $product_price . '</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>';
+                    break;
+            }
+        }
+    } else {
+        echo "<p class='p-3'>No products found in this section.</p>";
+    }
+}
+
+
+
+
+
+
+
+
+
+logout
+
+<?php
+session_start();
+
+// 1. Initialize the toast message before destroying the existing session variables
+$_SESSION['toast-message'] = "Logged out successfully!";
+$_SESSION['toast-icon'] = "success";
+
+// 2. Keep the toast variables safe while clearing everything else
+$toastMsg = $_SESSION['toast-message'];
+$toastIcon = $_SESSION['toast-icon'];
+
+// 3. Unset all of the session variables
+$_SESSION = array();
+
+// 4. If it's desired to kill the session entirely, destroy the session cookie as well
+if (ini_get("session.use_cookies")) {
+    $params = session_get_cookie_params();
+    setcookie(
+        session_name(),
+        '',
+        time() - 42000,
+        $params["path"],
+        $params["domain"],
+        $params["secure"],
+        $params["httponly"]
+    );
+}
+
+// 5. Destroy the server-side session file
+session_destroy();
+
+// 6. Start a brand new session context just to pass the toast to the index page
+session_start();
+$_SESSION['toast-message'] = $toastMsg;
+$_SESSION['toast-icon'] = $toastIcon;
+
+// 7. Redirect back to the landing page
+header("Location: ../index.php"); // Adjust path if index.php is in a different directory
+exit();
