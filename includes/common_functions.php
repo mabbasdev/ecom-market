@@ -818,14 +818,28 @@ function cart()
             $user_id = $user_data['user_id'];
 
             // Check if the product already exist or not
-            $check_cart = $con->prepare("SELECT * FROM `cart-details` WHERE `user_id`=? AND `product_id`=?");
+            $check_cart = $con->prepare("SELECT * FROM `ecom_cart-details` WHERE `user_id`=? AND `product_id`=?");
             $check_cart->bind_param('ii', $user_id, $getProductId);
             $check_cart->execute();
             $result_check = $check_cart->get_result();
             if ($result_check->num_rows > 0) {
                 // update
+                $update = $con->prepare("UPDATE `ecom-cart-details` SET quantity=quantity+1 WHERE `user_id`=? AND `product_id`=?");
+                $update->bind_param('ii', $user_id, $getProductId);
+                $update->execute();
+                $_SESSION['toast-message'] = "Quantity Updated";
+                $_SESSION['toast-icon'] = "info";
             } else {
                 // insert
+                $insert = $con->prepare("INSERT INTO `ecom-cart-details` (`user_id`, `product_id`, `quantity`)
+                VALUES (?,?,1)");
+                $insert->bind_param('ii', $user_id, $getProductId);
+                $insert->execute();
+                $_SESSION['toast-message'] = "Product Added Successfully";
+                $_SESSION['toast-icon'] = "success";
+                // header("Location: index.php");
+                // exit();
+
             }
         } else {
             // guest user
