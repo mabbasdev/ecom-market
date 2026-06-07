@@ -5,7 +5,7 @@ include('includes/dbconnect.php');
 include('includes/common_functions.php');
 
 $user_id = null;
-if ($_SESSION['username']) {
+if (isset($_SESSION['username'])) {
   $username = $_SESSION['username'];
   $stmt = $con->prepare("SELECT `user_id` FROM `ecom_users` WHERE `user_username`=?");
   $stmt->bind_param('s', $username);
@@ -28,7 +28,7 @@ if ($user_id) {
   $result = $stmt->get_result();
   while ($row = $result->fetch_assoc()) {
     $cartItems[] = $row;
-    $totalPrice += $totalPrice + $row['product_price'] * $row['quantity'];
+    $totalPrice += $row['product_price'] * $row['quantity'];
   }
 } else if (!empty($_SESSION['cart'])) {
   // for guest user
@@ -38,8 +38,28 @@ if ($user_id) {
   while ($row = mysqli_fetch_assoc($result)) {
     $row['quantity'] = $_SESSION['cart'][$row['product_id']];
     $cartItems[] = $row;
-    $totalPrice += $totalPrice + $row['product_price'] * $row['quantity'];
+    $totalPrice += $row['product_price'] * $row['quantity'];
   }
+}
+
+if (isset($_POST['update-cart']) && isset($_POST['qty'])) {
+  // echo "update is working";
+  foreach ($_POST['qty'] as $pid => $qty) {
+    $pid = (int)$pid;
+    $qty = (int)$qty;
+    if ($qty <= 0) continue;
+    if ($user_id) {
+      $stmt = $con->prepare("UPDATE `ecom_cart_details` SET quantity=? WHERE user_id=? AND product_id=?");
+      $stmt->bind_param('iii', $qty, $user_id, $pid);
+      $stmt->execute();
+    } else {
+      $_SESSION['cart'][$pid] = $qty;
+    }
+  }
+  $_SESSION['toast-message'] = "update working";
+  $_SESSION['toast-icon'] = "success";
+  header("Location: cart.php");
+  exit();
 }
 
 ob_end_clean();
@@ -67,7 +87,7 @@ include('includes/navbar.php');
     <div class="container">
       <div class="row">
         <div class="col-lg-9">
-          <div class="box-carts">
+          <form class="box-carts" method="post">
             <div class="head-wishlist">
               <div class="item-wishlist">
                 <div class="wishlist-cb">
@@ -100,38 +120,43 @@ include('includes/navbar.php');
                           <div class="product-wishlist">
                             <div class="product-image">
                               <a href="product.php">
-                                <img src="images/'. $product_image . '" alt="Ecom">
+                                <img src="images/' . $product_image . '" alt="Ecom">
                               </a>
                             </div>
                             <div class="product-info"><a href="product.php">
-                                <h6 class="color-brand-3">'. $product_title . '</h6>
+                                <h6 class="color-brand-3">' . $product_title . '</h6>
                               </a>
-                              <div class="rating"><img src="images/star.svg" alt="Ecom"><img src="images/star.svg"
-                                  alt="Ecom"><img src="images/star.svg" alt="Ecom"><img src="images/star.svg" alt="Ecom"><img
-                                  src="images/star.svg" alt="Ecom"><span class="font-xs color-gray-500"> (65)</span></div>
+                              <div class="rating">
+                                <img src="images/star.svg" alt="Ecom">
+                                <img src="images/star.svg" alt="Ecom">
+                                <img src="images/star.svg" alt="Ecom">
+                                <img src="images/star.svg" alt="Ecom">
+                                <img src="images/star.svg" alt="Ecom">
+                                <span class="font-xs color-gray-500"> (65)</span>
+                              </div>
                             </div>
                           </div>
                         </div>
                         <div class="wishlist-price">
-                          <h4 class="color-brand-3">$'. $product_price . '</h4>
+                          <h4 class="color-brand-3">$' . $product_price . '</h4>
                         </div>
                         <div class="wishlist-status">
                           <div class="box-quantity">
                             <div class="input-quantity">
-                              <input class="font-xl color-brand-3" type="text" value="'. $product_quantity . '" min="1" name="item-qty">
-                              <span class="minus-cart"></span><span
-                                class="plus-cart"></span>
+                              <input class="font-xl color-brand-3" type="text" value="' . $product_quantity . '" min="1" name="qty[' . $product_id . ']">
+                              <span class="minus-cart"></span>
+                              <span class="plus-cart"></span>
                             </div>
                           </div>
                         </div>
                         <div class="wishlist-action">
-                          <h4 class="color-brand-3">$'. $subtotal . '</h4>
+                          <h4 class="color-brand-3">$' . $subtotal . '</h4>
                         </div>
-                        <div class="wishlist-remove"><a class="btn btn-delete" href="cart.php?deleteItem='. $product_id . '"></a></div>
+                        <div class="wishlist-remove"><a class="btn btn-delete" href="cart.php?deleteItem=' . $product_id . '"></a></div>
                       </div>';
               }
               ?>
-              
+
               <!-- <div class="container">
                 <div class="text-center mb-150 mt-50">
                   <div class="image-404 mb-50"> <img src="images/404.png" alt="Ecom"></div>
@@ -145,7 +170,7 @@ include('includes/navbar.php');
               <div class="col-lg-6 col-md-6 col-sm-6-col-6"><a class="btn btn-buy w-auto arrow-back mb-10"
                   href="shop.php">Continue shopping</a></div>
               <div class="col-lg-6 col-md-6 col-sm-6-col-6 text-md-end">
-                <a class="btn btn-buy w-auto update-cart mb-10" href="cart.php" name="update-cart">Update cart</a>
+                <input class="btn btn-buy w-auto update-cart mb-10" type="submit" name="update-cart" value="Update cart">
               </div>
             </div>
             <div class="row mb-50">
@@ -181,7 +206,7 @@ include('includes/navbar.php');
                 </div>
               </div>
             </div>
-          </div>
+          </form>
         </div>
         <div class="col-lg-3">
           <div class="summary-cart">
@@ -189,7 +214,7 @@ include('includes/navbar.php');
               <div class="row">
                 <div class="col-6"><span class="font-md-bold color-gray-500">Subtotal</span></div>
                 <div class="col-6 text-end">
-                  <h4> $2.51</h4>
+                  <h4> $<?php echo $totalPrice; ?></h4>
                 </div>
               </div>
             </div>
@@ -213,11 +238,17 @@ include('includes/navbar.php');
               <div class="row">
                 <div class="col-6"><span class="font-md-bold color-gray-500">Total</span></div>
                 <div class="col-6 text-end">
-                  <h4> $2.51</h4>
+                  <h4> $<?php echo $totalPrice; ?></h4>
                 </div>
               </div>
             </div>
-            <div class="box-button"><a class="btn btn-buy" href="shop-checkout.html">Proceed To CheckOut</a></div>
+            <div class="box-button">
+              <?php if (isset($_SESSION['username'])) {
+                echo '<a class="btn btn-buy" href="shop-checkout.html">Proceed To CheckOut</a>';
+              } else {
+                echo '<a class="btn btn-buy" href="shop-checkout.html">Login To CheckOut</a>';
+              } ?>
+            </div>
           </div>
         </div>
       </div>
