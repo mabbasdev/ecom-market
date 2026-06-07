@@ -661,7 +661,7 @@ function get_product_details($data)
                         </div>
                         <div class="button-buy">
                             <a class="btn btn-cart" href="' . $redirectUrl . '?addtoCart=' . $product_id . '">Add to cart</a><a class="btn btn-buy"
-                                href="shop-checkout.html">Buy now</a>
+                                href="checkout.php">Buy now</a>
                         </div>
                     </div>
                 </div>

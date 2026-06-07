@@ -137,7 +137,7 @@
                                             href="<?php echo getAbsoluteLink('cart.php', $baseURL); ?>">View cart</a>
                                     </div>
                                     <div class="col-6"><a class="btn btn-buy w-auto"
-                                            href="shop-checkout.html">Checkout</a></div>
+                                            href="checkout.php">Checkout</a></div>
                                 </div>
                             </div>
                         </div>
