@@ -909,3 +909,44 @@ function cart_item()
     }
     echo $count;
 }
+function total_price()
+{
+    global $con;
+    $total = 0;
+    if (isset($_SESSION['username'])) {
+        // logged in user
+        $username = $_SESSION['username'];
+        if (!isset($_SESSION['user_id'])) {
+            $stmt = $con->prepare("SELECT user_id FROM `ecom_users` WHERE username = ?");
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $_SESSION['user_id'] = $stmt->get_result()->fetch_assoc()['user_id'];
+        }
+        $uid = $_SESSION['user_id'];
+        $sql = "SELECT p.product_price,c.quantity FROM ecom_cart_details c JOIN ecom_products p ON c.product_id=p.product_id WHERE c.user_id=?";
+        $stmt = $con->prepare($sql);
+        $stmt->bind_param("i", $uid);
+        $stmt->execute();
+        $items = $stmt->get_result();
+        while ($row = $items->fetch_assoc()) {
+            $total += $row['product_price'] * $row['quantity'];
+        }
+    } else {
+        // guest user
+        if (isset($_SESSION['cart']) && count($_SESSION) > 0) {
+            $product_ids = array_keys($_SESSION['cart']);
+            $placeholders = implode(',', array_fill(0, count($product_ids), "?"));
+            $sql = "SELECT product_id,product_price FROM ecom_products WHERE product_id IN ($placeholders)";
+            $stmt = $con->prepare($sql);
+            $types = str_repeat('i', count($product_ids));
+            $stmt->bind_param($types, ...$product_ids);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                $pid = $row['product_id'];
+                $total += $row['product_price'] * $_SESSION['cart'][$pid];
+            }
+        }
+    }
+    echo $total;
+}

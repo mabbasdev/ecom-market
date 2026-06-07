@@ -256,7 +256,7 @@ include('includes/navbar.php');
               <div class="row">
                 <div class="col-6"><span class="font-md-bold color-gray-500">Subtotal</span></div>
                 <div class="col-6 text-end">
-                  <h4> $<?php echo $totalPrice; ?></h4>
+                  <h4> $<?php total_price(); ?></h4>
                 </div>
               </div>
             </div>

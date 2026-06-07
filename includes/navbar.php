@@ -130,7 +130,7 @@
                                 <div class="row">
                                     <div class="col-6 text-start"><span
                                             class="font-md-bold color-brand-3">Total</span></div>
-                                    <div class="col-6"><span class="font-md-bold color-brand-1">$2586.3</span></div>
+                                    <div class="col-6"><span class="font-md-bold color-brand-1">$<?php total_price(); ?></span></div>
                                 </div>
                                 <div class="row mt-15">
                                     <div class="col-6 text-start"><a class="btn btn-cart w-auto"
