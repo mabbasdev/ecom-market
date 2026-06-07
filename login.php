@@ -70,14 +70,14 @@ if (isset($_POST['loginSubmit'])) {
         unset($_SESSION['gotocheckout']);
         $_SESSION['toast-message'] = "Welcome Back! Proceed to Checkout!";
         $_SESSION['toast-icon'] = "success";
-        header("Location: checkout.html");
+        header("Location: checkout.php");
         exit();
-        }
-        
-        $_SESSION['toast-message'] = "Welcome Back!";
-        $_SESSION['toast-icon'] = "success";
-        header("Location: index.php");
-        exit();
+      }
+
+      $_SESSION['toast-message'] = "Welcome Back!";
+      $_SESSION['toast-icon'] = "success";
+      header("Location: index.php");
+      exit();
     } else {
       $_SESSION['toast-message'] = "Username or Password is wrong";
       $_SESSION['toast-icon'] = "info";
