@@ -78,6 +78,24 @@ if (isset($_GET['deleteItem'])) {
   exit();
 }
 
+// delete multiple items
+if (isset($_POST['remove-selected']) && isset($_POST['remove'])) {
+  foreach ($_POST['remove'] as $pid) {
+    $pid = (int)$pid;
+    if ($user_id) {
+      $stmt = $con->prepare("DELETE FROM `ecom_cart_details` WHERE user_id=? AND product_id=?");
+      $stmt->bind_param('ii', $user_id, $pid);
+      $stmt->execute();
+    } else {
+      unset($_SESSION['cart'][$pid]);
+    }
+  }
+  $_SESSION['toast-message'] = "Items Removed From Cart";
+  $_SESSION['toast-icon'] = "error";
+  header("Location: cart.php");
+  exit();
+}
+
 ob_end_clean();
 include('includes/header.php');
 include('includes/navbar.php');
@@ -107,7 +125,7 @@ include('includes/navbar.php');
             <div class="head-wishlist">
               <div class="item-wishlist">
                 <div class="wishlist-cb">
-                  <input class="cb-layout cb-all" type="checkbox">
+                  <input class="cb-layout cb-all" type="checkbox" id="select-all">
                 </div>
                 <div class="wishlist-product"><span class="font-md-bold color-brand-3">Product</span></div>
                 <div class="wishlist-price"><span class="font-md-bold color-brand-3">Unit Price</span></div>
@@ -118,19 +136,20 @@ include('includes/navbar.php');
             </div>
             <div class="content-wishlist mb-20">
               <?php
+              if (!empty($cartItems)) {
 
-              foreach ($cartItems as $item) {
-                $product_id = $item['product_id'];
-                $product_title = $item['product_title'];
-                $subtotal = $item['product_price'] * $item['quantity'];
-                $product_quantity = $item['quantity'];
-                $product_price = $item['product_price'];
-                $product_image = $item['product_image_1'];
+                foreach ($cartItems as $item) {
+                  $product_id = $item['product_id'];
+                  $product_title = $item['product_title'];
+                  $subtotal = $item['product_price'] * $item['quantity'];
+                  $product_quantity = $item['quantity'];
+                  $product_price = $item['product_price'];
+                  $product_image = $item['product_image_1'];
 
 
-                echo '<div class="item-wishlist">
+                  echo '<div class="item-wishlist">
                         <div class="wishlist-cb">
-                          <input class="cb-layout cb-select" type="checkbox" name="remove[]">
+                          <input class="cb-layout cb-select" type="checkbox" name="remove[]" value="' . $product_id . '">
                         </div>
                         <div class="wishlist-product">
                           <div class="product-wishlist">
@@ -172,23 +191,28 @@ include('includes/navbar.php');
                           <a class="btn btn-delete" href="cart.php?deleteItem=' . $product_id . '"></a>
                         </div>
                       </div>';
+                }
+              } else {
+
+              ?>
+                <div class="container">
+                  <div class="text-center mb-150 mt-50">
+                    <div class="image-404 mb-50"> <img src="images/404.png" alt="Ecom"></div>
+                    <h3>Your Cart Is Empty</h3>
+                    <p class="font-md-bold color-gray-600">This Place is Abandoned</p>
+                    <div class="mt-15"> <a class="btn btn-buy w-auto arrow-back" href="index.php">Back to Homepage</a></div>
+                  </div>
+                </div>
+              <?php
               }
               ?>
-
-              <!-- <div class="container">
-                <div class="text-center mb-150 mt-50">
-                  <div class="image-404 mb-50"> <img src="images/404.png" alt="Ecom"></div>
-                  <h3>Products Not Found</h3>
-                  <p class="font-md-bold color-gray-600">This Place is Abandoned</p>
-                  <div class="mt-15"> <a class="btn btn-buy w-auto arrow-back" href="index.php">Back to Homepage</a></div>
-                </div>
-              </div> -->
             </div>
             <div class="row mb-40">
               <div class="col-lg-6 col-md-6 col-sm-6-col-6"><a class="btn btn-buy w-auto arrow-back mb-10"
                   href="shop.php">Continue shopping</a></div>
               <div class="col-lg-6 col-md-6 col-sm-6-col-6 text-md-end">
                 <input class="btn btn-buy w-auto update-cart mb-10" type="submit" name="update-cart" value="Update cart">
+                <input class="btn btn-buy w-auto mb-10" type="submit" name="remove-selected" value="Remove Selected">
               </div>
             </div>
             <div class="row mb-50">
@@ -890,6 +914,36 @@ include('includes/navbar.php');
     </div>
   </div>
 </main>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const selectAllCheckbox = document.getElementById('select-all');
+    const itemCheckboxes = document.querySelectorAll('.cb-select');
+
+    if (selectAllCheckbox) {
+      selectAllCheckbox.addEventListener('change', function() {
+        // Loop through all individual checkboxes and match their checked state
+        itemCheckboxes.forEach(checkbox => {
+          checkbox.checked = selectAllCheckbox.checked;
+        });
+      });
+
+      // If a user manually unchecks one item, 
+      // uncheck the master "Select All" checkbox automatically.
+      itemCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+          // If any checkbox is unchecked, "Select All" becomes false
+          if (!this.checked) {
+            selectAllCheckbox.checked = false;
+          } else {
+            // If ALL individual checkboxes are checked, turn "Select All" back on
+            const allChecked = Array.from(itemCheckboxes).every(cb => cb.checked);
+            selectAllCheckbox.checked = allChecked;
+          }
+        });
+      });
+    }
+  });
+</script>
 <?php include('includes/footer-nav.php'); ?>
 <?php include('includes/bottom.php'); ?>
 
