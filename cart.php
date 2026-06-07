@@ -1,7 +1,52 @@
-<?php include('includes/dbconnect.php'); ?>
-<?php include('includes/common_functions.php'); ?>
-<?php include('includes/header.php'); ?>
-<?php include('includes/navbar.php'); ?>
+<?php
+ob_start();
+session_start();
+include('includes/dbconnect.php');
+include('includes/common_functions.php');
+
+$user_id = null;
+if ($_SESSION['username']) {
+  $username = $_SESSION['username'];
+  $stmt = $con->prepare("SELECT `user_id` FROM `ecom_users` WHERE `user_username`=?");
+  $stmt->bind_param('s', $username);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  if ($result->num_rows > 0) {
+    $user_data = $result->fetch_assoc();
+    $user_id = $user_data['user_id'];
+  }
+}
+
+// Fetch Cart Items
+$totalPrice = 0;
+$cartItems = [];
+// for logged in user
+if ($user_id) {
+  $stmt = $con->prepare("SELECT p.product_id,p.product_title,p.product_price,p.product_image_1, c.quantity FROM ecom_cart_details c JOIN ecom_products p ON p.product_id = c.product_id WHERE c.user_id=?");
+  $stmt->bind_param('i', $user_id);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  while ($row = $result->fetch_assoc()) {
+    $cartItems[] = $row;
+    $totalPrice += $totalPrice + $row['product_price'] * $row['quantity'];
+  }
+} else if (!empty($_SESSION['cart'])) {
+  // for guest user
+  $ids = implode(",", array_keys($_SESSION['cart']));
+  $query = "SELECT * FROM ecom_products WHERE product_id IN ($ids)";
+  $result = mysqli_query($con, $query);
+  while ($row = mysqli_fetch_assoc($result)) {
+    $row['quantity'] = $_SESSION['cart'][$row['product_id']];
+    $cartItems[] = $row;
+    $totalPrice += $totalPrice + $row['product_price'] * $row['quantity'];
+  }
+}
+
+ob_end_clean();
+include('includes/header.php');
+include('includes/navbar.php');
+// cart();
+?>
 <script>
   document.title = 'Cart - Ecom Marketplace';
 </script>
@@ -36,106 +81,57 @@
               </div>
             </div>
             <div class="content-wishlist mb-20">
-              <div class="item-wishlist">
-                <div class="wishlist-cb">
-                  <input class="cb-layout cb-select" type="checkbox" name="remove[]">
-                </div>
-                <div class="wishlist-product">
-                  <div class="product-wishlist">
-                    <div class="product-image"><a href="product.php"><img src="images/img-sub.png"
-                          alt="Ecom"></a></div>
-                    <div class="product-info"><a href="product.php">
-                        <h6 class="color-brand-3">Dell Optiplex 9020 Small Form Business Desktop Tower PC</h6>
-                      </a>
-                      <div class="rating"><img src="images/star.svg" alt="Ecom"><img src="images/star.svg"
-                          alt="Ecom"><img src="images/star.svg" alt="Ecom"><img src="images/star.svg" alt="Ecom"><img
-                          src="images/star.svg" alt="Ecom"><span class="font-xs color-gray-500"> (65)</span></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="wishlist-price">
-                  <h4 class="color-brand-3">$2.51</h4>
-                </div>
-                <div class="wishlist-status">
-                  <div class="box-quantity">
-                    <div class="input-quantity">
-                      <input class="font-xl color-brand-3" type="text" value="1" min="1" name="item-qty">
-                      <span class="minus-cart"></span><span
-                        class="plus-cart"></span>
-                    </div>
-                  </div>
-                </div>
-                <div class="wishlist-action">
-                  <h4 class="color-brand-3">$2.51</h4>
-                </div>
-                <div class="wishlist-remove"><a class="btn btn-delete" href="#"></a></div>
-              </div>
-              <div class="item-wishlist">
-                <div class="wishlist-cb">
-                  <input class="cb-layout cb-select" type="checkbox">
-                </div>
-                <div class="wishlist-product">
-                  <div class="product-wishlist">
-                    <div class="product-image"><a href="product.php"><img src="images/img-sub2.png"
-                          alt="Ecom"></a></div>
-                    <div class="product-info"><a href="product.php">
-                        <h6 class="color-brand-3">HP 24 All-in-One PC, Intel Core i3-1115G4, 4GB RAM</h6>
-                      </a>
-                      <div class="rating"><img src="images/star.svg" alt="Ecom"><img src="images/star.svg"
-                          alt="Ecom"><img src="images/star.svg" alt="Ecom"><img src="images/star.svg" alt="Ecom"><img
-                          src="images/star.svg" alt="Ecom"><span class="font-xs color-gray-500"> (65)</span></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="wishlist-price">
-                  <h4 class="color-brand-3">$1.51</h4>
-                </div>
-                <div class="wishlist-status">
-                  <div class="box-quantity">
-                    <div class="input-quantity">
-                      <input class="font-xl color-brand-3" type="text" value="1"><span class="minus-cart"></span><span
-                        class="plus-cart"></span>
-                    </div>
-                  </div>
-                </div>
-                <div class="wishlist-action">
-                  <h4 class="color-brand-3">$1.51</h4>
-                </div>
-                <div class="wishlist-remove"><a class="btn btn-delete" href="#"></a></div>
-              </div>
-              <div class="item-wishlist">
-                <div class="wishlist-cb">
-                  <input class="cb-layout cb-select" type="checkbox">
-                </div>
-                <div class="wishlist-product">
-                  <div class="product-wishlist">
-                    <div class="product-image"><a href="product.php"><img src="images/img-sub3.png"
-                          alt="Ecom"></a></div>
-                    <div class="product-info"><a href="product.php">
-                        <h6 class="color-brand-3">Gateway 23.8" All-in-one Desktop, Fully Adjustable Stand</h6>
-                      </a>
-                      <div class="rating"><img src="images/star.svg" alt="Ecom"><img src="images/star.svg"
-                          alt="Ecom"><img src="images/star.svg" alt="Ecom"><img src="images/star.svg" alt="Ecom"><img
-                          src="images/star.svg" alt="Ecom"><span class="font-xs color-gray-500"> (65)</span></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="wishlist-price">
-                  <h4 class="color-brand-3">$3.51</h4>
-                </div>
-                <div class="wishlist-status">
-                  <div class="box-quantity">
-                    <div class="input-quantity">
-                      <input class="font-xl color-brand-3" type="text" value="1"><span class="minus-cart"></span><span
-                        class="plus-cart"></span>
-                    </div>
-                  </div>
-                </div>
-                <div class="wishlist-action">
-                  <h4 class="color-brand-3">$3.51</h4>
-                </div>
-                <div class="wishlist-remove"><a class="btn btn-delete" href="#"></a></div>
-              </div>
+              <?php
+
+              foreach ($cartItems as $item) {
+                $product_id = $item['product_id'];
+                $product_title = $item['product_title'];
+                $subtotal = $item['product_price'] * $item['quantity'];
+                $product_quantity = $item['quantity'];
+                $product_price = $item['product_price'];
+                $product_image = $item['product_image_1'];
+
+
+                echo '<div class="item-wishlist">
+                        <div class="wishlist-cb">
+                          <input class="cb-layout cb-select" type="checkbox" name="remove[]">
+                        </div>
+                        <div class="wishlist-product">
+                          <div class="product-wishlist">
+                            <div class="product-image">
+                              <a href="product.php">
+                                <img src="images/'. $product_image . '" alt="Ecom">
+                              </a>
+                            </div>
+                            <div class="product-info"><a href="product.php">
+                                <h6 class="color-brand-3">'. $product_title . '</h6>
+                              </a>
+                              <div class="rating"><img src="images/star.svg" alt="Ecom"><img src="images/star.svg"
+                                  alt="Ecom"><img src="images/star.svg" alt="Ecom"><img src="images/star.svg" alt="Ecom"><img
+                                  src="images/star.svg" alt="Ecom"><span class="font-xs color-gray-500"> (65)</span></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="wishlist-price">
+                          <h4 class="color-brand-3">$'. $product_price . '</h4>
+                        </div>
+                        <div class="wishlist-status">
+                          <div class="box-quantity">
+                            <div class="input-quantity">
+                              <input class="font-xl color-brand-3" type="text" value="'. $product_quantity . '" min="1" name="item-qty">
+                              <span class="minus-cart"></span><span
+                                class="plus-cart"></span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="wishlist-action">
+                          <h4 class="color-brand-3">$'. $subtotal . '</h4>
+                        </div>
+                        <div class="wishlist-remove"><a class="btn btn-delete" href="cart.php?deleteItem='. $product_id . '"></a></div>
+                      </div>';
+              }
+              ?>
+              
               <!-- <div class="container">
                 <div class="text-center mb-150 mt-50">
                   <div class="image-404 mb-50"> <img src="images/404.png" alt="Ecom"></div>

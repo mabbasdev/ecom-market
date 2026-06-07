@@ -216,3 +216,106 @@ $_SESSION['toast-icon'] = $toastIcon;
 // 7. Redirect back to the landing page
 header("Location: ../index.php"); // Adjust path if index.php is in a different directory
 exit();
+
+
+
+<!-- <div class="item-wishlist">
+                <div class="wishlist-cb">
+                  <input class="cb-layout cb-select" type="checkbox" name="remove[]">
+                </div>
+                <div class="wishlist-product">
+                  <div class="product-wishlist">
+                    <div class="product-image"><a href="product.php"><img src="images/img-sub.png"
+                          alt="Ecom"></a></div>
+                    <div class="product-info"><a href="product.php">
+                        <h6 class="color-brand-3">Dell Optiplex 9020 Small Form Business Desktop Tower PC</h6>
+                      </a>
+                      <div class="rating"><img src="images/star.svg" alt="Ecom"><img src="images/star.svg"
+                          alt="Ecom"><img src="images/star.svg" alt="Ecom"><img src="images/star.svg" alt="Ecom"><img
+                          src="images/star.svg" alt="Ecom"><span class="font-xs color-gray-500"> (65)</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="wishlist-price">
+                  <h4 class="color-brand-3">$2.51</h4>
+                </div>
+                <div class="wishlist-status">
+                  <div class="box-quantity">
+                    <div class="input-quantity">
+                      <input class="font-xl color-brand-3" type="text" value="1" min="1" name="item-qty">
+                      <span class="minus-cart"></span><span
+                        class="plus-cart"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="wishlist-action">
+                  <h4 class="color-brand-3">$2.51</h4>
+                </div>
+                <div class="wishlist-remove"><a class="btn btn-delete" href="#"></a></div>
+              </div> -->
+              <!-- <div class="item-wishlist">
+                <div class="wishlist-cb">
+                  <input class="cb-layout cb-select" type="checkbox">
+                </div>
+                <div class="wishlist-product">
+                  <div class="product-wishlist">
+                    <div class="product-image"><a href="product.php"><img src="images/img-sub2.png"
+                          alt="Ecom"></a></div>
+                    <div class="product-info"><a href="product.php">
+                        <h6 class="color-brand-3">HP 24 All-in-One PC, Intel Core i3-1115G4, 4GB RAM</h6>
+                      </a>
+                      <div class="rating"><img src="images/star.svg" alt="Ecom"><img src="images/star.svg"
+                          alt="Ecom"><img src="images/star.svg" alt="Ecom"><img src="images/star.svg" alt="Ecom"><img
+                          src="images/star.svg" alt="Ecom"><span class="font-xs color-gray-500"> (65)</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="wishlist-price">
+                  <h4 class="color-brand-3">$1.51</h4>
+                </div>
+                <div class="wishlist-status">
+                  <div class="box-quantity">
+                    <div class="input-quantity">
+                      <input class="font-xl color-brand-3" type="text" value="1"><span class="minus-cart"></span><span
+                        class="plus-cart"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="wishlist-action">
+                  <h4 class="color-brand-3">$1.51</h4>
+                </div>
+                <div class="wishlist-remove"><a class="btn btn-delete" href="#"></a></div>
+              </div>
+              <div class="item-wishlist">
+                <div class="wishlist-cb">
+                  <input class="cb-layout cb-select" type="checkbox">
+                </div>
+                <div class="wishlist-product">
+                  <div class="product-wishlist">
+                    <div class="product-image"><a href="product.php"><img src="images/img-sub3.png"
+                          alt="Ecom"></a></div>
+                    <div class="product-info"><a href="product.php">
+                        <h6 class="color-brand-3">Gateway 23.8" All-in-one Desktop, Fully Adjustable Stand</h6>
+                      </a>
+                      <div class="rating"><img src="images/star.svg" alt="Ecom"><img src="images/star.svg"
+                          alt="Ecom"><img src="images/star.svg" alt="Ecom"><img src="images/star.svg" alt="Ecom"><img
+                          src="images/star.svg" alt="Ecom"><span class="font-xs color-gray-500"> (65)</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="wishlist-price">
+                  <h4 class="color-brand-3">$3.51</h4>
+                </div>
+                <div class="wishlist-status">
+                  <div class="box-quantity">
+                    <div class="input-quantity">
+                      <input class="font-xl color-brand-3" type="text" value="1"><span class="minus-cart"></span><span
+                        class="plus-cart"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="wishlist-action">
+                  <h4 class="color-brand-3">$3.51</h4>
+                </div>
+                <div class="wishlist-remove"><a class="btn btn-delete" href="#"></a></div>
+              </div> -->
