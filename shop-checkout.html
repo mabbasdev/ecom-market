@@ -146,7 +146,7 @@
                   <div class="row mt-15">
                     <div class="col-6 text-start"><a class="btn btn-cart w-auto" href="cart.php">View cart</a>
                     </div>
-                    <div class="col-6"><a class="btn btn-buy w-auto" href="shop-checkout.html">Checkout</a></div>
+                    <div class="col-6"><a class="btn btn-buy w-auto" href="checkout.php">Checkout</a></div>
                   </div>
                 </div>
               </div>
@@ -388,7 +388,7 @@
               <div class="col-lg-6 col-5 mb-20"><a class="btn font-sm-bold color-brand-1 arrow-back-1"
                   href="cart.php">Return to Cart</a></div>
               <div class="col-lg-6 col-7 mb-20 text-end"><a class="btn btn-buy w-auto arrow-next"
-                  href="shop-checkout.html">Place an Order</a></div>
+                  href="checkout.php">Place an Order</a></div>
             </div>
           </div>
           <div class="col-lg-6">
@@ -681,7 +681,7 @@
                           class="plus-cart"></span>
                       </div>
                       <div class="button-buy"><a class="btn btn-cart" href="cart.php">Add to cart</a><a
-                          class="btn btn-buy" href="shop-checkout.html">Buy now</a></div>
+                          class="btn btn-buy" href="checkout.php">Buy now</a></div>
                     </div>
                   </div>
                 </div>
