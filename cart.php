@@ -56,8 +56,24 @@ if (isset($_POST['update-cart']) && isset($_POST['qty'])) {
       $_SESSION['cart'][$pid] = $qty;
     }
   }
-  $_SESSION['toast-message'] = "update working";
+  $_SESSION['toast-message'] = "Cart Updated";
   $_SESSION['toast-icon'] = "success";
+  header("Location: cart.php");
+  exit();
+}
+
+// delete cart item
+if (isset($_GET['deleteItem'])) {
+  $pid = (int)$_GET['deleteItem'];
+  if ($user_id) {
+    $stmt = $con->prepare("DELETE FROM `ecom_cart_details` WHERE user_id=? AND product_id=?");
+    $stmt->bind_param('ii', $user_id, $pid);
+    $stmt->execute();
+  } else {
+    unset($_SESSION['cart'][$pid]);
+  }
+  $_SESSION['toast-message'] = "Item Removed From Cart";
+  $_SESSION['toast-icon'] = "error";
   header("Location: cart.php");
   exit();
 }
@@ -152,7 +168,9 @@ include('includes/navbar.php');
                         <div class="wishlist-action">
                           <h4 class="color-brand-3">$' . $subtotal . '</h4>
                         </div>
-                        <div class="wishlist-remove"><a class="btn btn-delete" href="cart.php?deleteItem=' . $product_id . '"></a></div>
+                        <div class="wishlist-remove">
+                          <a class="btn btn-delete" href="cart.php?deleteItem=' . $product_id . '"></a>
+                        </div>
                       </div>';
               }
               ?>
