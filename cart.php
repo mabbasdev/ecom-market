@@ -288,7 +288,7 @@ include('includes/navbar.php');
               <?php if (isset($_SESSION['username'])) {
                 echo '<a class="btn btn-buy" href="shop-checkout.html">Proceed To CheckOut</a>';
               } else {
-                echo '<a class="btn btn-buy" href="login.php">Login To CheckOut</a>';
+                echo '<a class="btn btn-buy" href="login.php?checkout=1">Login To CheckOut</a>';
               } ?>
             </div>
           </div>
