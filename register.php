@@ -58,9 +58,19 @@ if (isset($_POST['registerUser'])) {
 
   $stmtInsert = $con->prepare($userInsertQuery);
   $stmtInsert->bind_param('ssss', $userName, $userFullName, $userEmail, $hashedPass);
-
-  if ($stmtInsert->execute()) {
+  $resultInsert = $stmtInsert->execute();
+  if ($resultInsert) {
+    $user_id = $con->insert_id;
+    if (isset($_SESSION['cart']) && count($_SESSION['cart']) > 0) {
+      foreach ($_SESSION['cart'] as $product_id => $qty) {
+        $insert_cart = $con->prepare("INSERT INTO `ecom_cart_details` (user_id, product_id, quantity) VALUES (?, ?, ?)");
+        $insert_cart->bind_param('iii', $user_id, $product_id, $qty);
+        $insert_cart->execute();
+      }
+      unset($_SESSION['cart']);
+    }
     $_SESSION['username'] = $userFullName;
+    $_SESSION['user_id'] = $user_id;
     $_SESSION['toast-message'] = "Account Created Successfully!";
     $_SESSION['toast-icon'] = "success";
 
