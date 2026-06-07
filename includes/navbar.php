@@ -107,7 +107,7 @@
                         href="shop-wishlist.html"><span>Wishlist</span><span class="number-item font-xs">5</span></a>
                     <div class="d-inline-block box-dropdown-cart"><span
                             class="font-lg icon-list icon-cart"><span>Cart</span><span
-                                class="number-item font-xs">2</span></span>
+                                class="number-item font-xs"><?php cart_item(); ?></span></span>
                         <div class="dropdown-cart">
                             <div class="item-cart mb-20">
                                 <div class="cart-image"><img src="images/imgsp5.png" alt="Ecom"></div>
@@ -261,20 +261,19 @@
                         </div>
                     </div>
                     <ul class="mobile-menu">
-                    <?php    
-                    if (isset($_SESSION['username'])) {
-                        echo '<li><a href="page-account.html">My Account</a></li>
+                        <?php
+                        if (isset($_SESSION['username'])) {
+                            echo '<li><a href="page-account.html">My Account</a></li>
                         <li><a href="page-account.html">Order Tracking</a></li>
                         <li><a href="page-account.html">My Orders</a></li>
                         <li><a href="page-account.html">My Wishlist</a></li>
                         <li><a href="page-account.html">Setting</a></li>
                         <li><a href="' . getAbsoluteLink('logout.php', $baseURL) . '">Sign out</a></li>';
-                    }
-                    else {
-                        echo '<li><a href="page-account.html">My Account</a></li>
+                        } else {
+                            echo '<li><a href="page-account.html">My Account</a></li>
                         <li><a href="' . getAbsoluteLink('register.php', $baseURL) . '">Order Tracking</a></li>';
-                    }
-                    ?>
+                        }
+                        ?>
                     </ul>
                 </div>
                 <div class="mobile-banner">

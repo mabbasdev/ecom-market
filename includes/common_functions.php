@@ -882,3 +882,30 @@ function cart()
         }
     }
 }
+
+function cart_item()
+{
+    global $con;
+    $count = 0;
+    if (isset($_SESSION['username'])) {
+        //loggedin user
+        $username = $_SESSION['username'];
+        $stmt = $con->prepare("SELECT `user_id` FROM `ecom_users` WHERE `user_username` = ?");
+        $stmt->bind_param('s', $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user_data = $result->fetch_assoc();
+        $user_id = $user_data['user_id'];
+        $count_query = $con->prepare("SELECT SUM(quantity) AS total FROM `ecom_cart_details` WHERE user_id =?");
+        $count_query->bind_param('i', $user_id);
+        $count_query->execute();
+        $data = $count_query->get_result()->fetch_assoc();
+        $count = $data['total'] ?? 0;
+    } else {
+        // guest user
+        if (isset($_SESSION['cart'])) {
+            $count = array_sum($_SESSION['cart']);
+        }
+    }
+    echo $count;
+}
