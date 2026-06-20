@@ -2,6 +2,10 @@
 $productFolder = 'ecom-market';
 $commonFuntionsPath = $_SERVER['DOCUMENT_ROOT'] . '/' . $productFolder . 'includes/common_functions.php';
 
+$api_key = "";
+$api_secret = "";
+
+
 if (file_exists($commonFuntionsPath)) {
     include_once($commonFuntionsPath);
 } else {
