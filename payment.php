@@ -1,3 +1,95 @@
+<?php
+require_once('includes/dbconnect.php');
+require_once('includes/config.php');
+require_once('includes/common_functions.php');
+
+require_once('safepay/src/Base.php');
+require_once('safepay/src/Checkout.php');
+require_once('safepay/src/Payments.php');
+require_once('safepay/src/Safepay.php');
+
+use Safepay\Safepay;
+
+if (!isset($_SESSION['username'])) {
+    echo "<script>alert('Please Login first!');window.location.href='login.php'</script>";
+    exit();
+}
+$username = $_SESSION['username'];
+$stmt = $con->prepare('SELECT `user_id`, `user_username`, `user_full_name`, `user_email`, `user_password`, `user_phone_1`, `user_phone_2`, `user_address`, `user_created` FROM `ecom_users` WHERE `user_username`=?');
+$stmt->bind_param('s', $username);
+$stmt->execute();
+$user = $stmt->get_result()->fetch_assoc();
+
+if (!$user) {
+    echo "<script>alert('User Not Found Please login!');window.location.href='login.php'</script>";
+    exit();
+}
+
+$user_id = $user['user_id'];
+$total_price = 0;
+$cart_items = [];
+
+$stmt_cart = $con->prepare('SELECT c.product_id, p.product_title, p.product_price, c.quantity FROM ecom_cart_details c JOIN ecom_products p ON c.product_id = p.product_id WHERE c.user_id=?');
+$stmt_cart->bind_param('i', $user_id);
+$stmt_cart->execute();
+$result_cart = $stmt_cart->get_result();
+
+if ($result_cart->num_rows == 0) {
+    echo "<script>alert('Your Cart is Empty!');window.location.href='cart.php'</script>";
+    exit();
+}
+
+while ($row = $result_cart->fetch_assoc()) {
+    $row['subtotal'] = $row['product_price'] * $row['quantity'];
+    $total_price += $row['subtotal'];
+    $cart_items[] = $row;
+}
+
+$amount_in_paise = $total_price * 100;
+
+$config = [
+    "environment" => 'sandbox',
+    "apiKey" => 'sec_e9273e07a7ac',
+    "v1Secret" =>  'a73e5dad7cd8b1e7fea2f6d93f4c8',
+    "webhookSecret" =>  '14509fdd8591a60427e'
+];
+
+$safepay = new Safepay($config);
+
+// Create order
+
+try {
+    // 4. Generate a payment token for your order (e.g., 1000 PKR)
+    $response = $safepay->payments->getToken([
+        'receipt' => 'order_receipt_id' . uniqid(),
+        'amount'   => $amount_in_paise,
+        'currency' => 'PKR'
+    ]);
+
+    $paymentToken = $response['token'];
+
+    // 5. Generate the checkout link
+    $link = $safepay->checkout->create([
+        "token"       => $paymentToken,
+        "order_id"    => "ORDER_12345",
+        "source"      => "custom",
+        "webhooks"    => "true",
+        "success_url" => "http://localhost/your-project/success.php",
+        "cancel_url"  => "http://localhost/your-project/cancel.php"
+    ]);
+
+    // 6. Redirect your user directly to the payment screen
+    if ($link['result'] === 'success') {
+        header('Location: ' . $link['redirect']);
+        exit();
+    }
+} catch (Exception $e) {
+    echo "Payment initialization failed: " . $e->getMessage();
+    exit();
+}
+
+
+?>
 <div class="container">
     <div class="row">
         <div class="col-lg-6">
