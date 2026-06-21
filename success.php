@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once('includes/dbconnect.php');
 
-// 1. Ensure the user is logged in
+// Ensure the user is logged in
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
@@ -13,7 +13,7 @@ if (!isset($_SESSION['username'])) {
 
 $username = $_SESSION['username'];
 
-// 2. Capture parameters from the Safepay redirect link
+// Capture parameters from the Safepay redirect link
 $order_id = isset($_GET['order_id']) ? $_GET['order_id'] : '';
 $tracker  = isset($_GET['tracker']) ? $_GET['tracker'] : '';
 
@@ -22,13 +22,13 @@ if (empty($tracker)) {
     exit();
 }
 
-// 3. SECURE VERIFICATION: Locally validate tracker syntax structure to bypass unstable cURL environments
+// SECURE VERIFICATION: Locally validate tracker syntax structure to bypass unstable cURL environments
 $is_paid = false;
 if (strpos($tracker, 'track_') === 0 && strlen($tracker) > 20) {
     $is_paid = true;
 }
 
-// 4. PROCESS TRANSACTION IF CHECK PASSES
+// PROCESS TRANSACTION IF CHECK PASSES
 if ($is_paid) {
     // Fetch user profile references
     $stmt = $con->prepare('SELECT `user_id` FROM `ecom_users` WHERE `user_username`=?');
@@ -63,12 +63,11 @@ if ($is_paid) {
         exit();
     }
 
-    // 5. Clear item arrays from active shopping session cart details grid
+    // Clear item arrays from active shopping session cart details grid
     $stmt_clear = $con->prepare('DELETE FROM `ecom_cart_details` WHERE `user_id`=?');
     $stmt_clear->bind_param('i', $user_id);
     $stmt_clear->execute();
 
-    // 6. Display the clean success confirmation component matching your screenshot
 ?>
     <!DOCTYPE html>
     <html lang="en">
