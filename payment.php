@@ -57,28 +57,24 @@ while ($row = $result_cart->fetch_assoc()) {
 // Safepay processes currency subunits (multiply your PKR total by 100)
 $amount_in_paise = $total_price * 100;
 
-// Handle the Form Submission when "Confirm and Pay" is explicitly triggered
-// Handle the Form Submission when "Confirm and Pay" is explicitly triggered
 if (isset($_POST['place_safepay_order'])) {
     $config = [
         "environment"   => 'sandbox',
         "apiKey"        => 'sec_1c973793-3e8e-4558-91a2-bce5818583f8',
         "v1Secret"      => '81f4d8dc5f14356cf11d4daa05f9f3eb71cffd7f1cd993abce9c08e237385b52',
-        "webhookSecret" => '81f4d8dc5f14356cf11d4daa05f9f3eb71cffd7f1cd993abce9c08e237385b52'
+        "webhookSecret" => '387fd4e0856d281e407d03242697221fca08f97faf2d007a64d61fe99d5a2f9d'
     ];
 
     $safepay = new Safepay($config);
     $unique_order_reference = "ORD_" . time() . "_" . $user_id;
 
     try {
-        // 1. Keep the official Sandbox API subsystem routing target
         $token_url = "https://sandbox.api.getsafepay.com/order/v1/init";
 
-        // 2. Build the exact payload schema required by Payments 2.0
         $payload = [
-            'client'      => 'sec_1c973793-3e8e-4558-91a2-bce5818583f8', // From image_4038a4.png
+            'client'      => 'sec_1c973793-3e8e-4558-91a2-bce5818583f8', 
             'environment' => 'sandbox',
-            'amount'      => (int)$amount_in_paise,                     // Total price in cents
+            'amount'      => (int)$amount_in_paise,
             'currency'    => 'PKR'
         ];
 
@@ -87,59 +83,44 @@ if (isset($_POST['place_safepay_order'])) {
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        // Safety transport overrides for local XAMPP network constraints
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-
-        // Internal cache resolve configuration to override local DNS blockages
         curl_setopt($ch, CURLOPT_RESOLVE, ["sandbox.api.getsafepay.com:443:104.21.50.210"]);
 
-        // 3. SET SECURE MERCHANT AUTHORIZATION HEADERS FOR PAYMENTS 2.0
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json',
-            'Accept: application/json',
-            'X-SFPY-MERCHANT-SECRET: 81f4d8dc5f14356cf11d4daa05f9f3eb71cffd7f1cd993abce9c08e237385b52' // Your secret from image_4038a4.png
+            'Accept: application/json'
         ]);
 
         $server_output = curl_exec($ch);
-
-        if ($server_output === false) {
-            throw new Exception("Local connection transport failed: " . curl_error($ch));
-        }
         curl_close($ch);
 
         $response = json_decode($server_output, true);
 
-        // 4. Safely handle nested JSON structures
         $paymentToken = '';
         if (isset($response['data']['token'])) {
             $paymentToken = $response['data']['token'];
         } elseif (isset($response['token'])) {
             $paymentToken = $response['token'];
         } else {
-            throw new Exception("Gateway initialization rejected. Details: " . $server_output);
+            throw new Exception("Gateway initialization rejected.");
         }
 
-        // Keep the verified sandbox API endpoint base
-        // 1. Let the official Safepay SDK securely generate the checkout parameters and redirect link
         $checkout_data = $safepay->checkout->create([
-            "token"       => $paymentToken,                                // The token initialized above
+            "token"       => $paymentToken,
             "order_id"    => "ORDER_" . time(),
             "source"      => "custom",
             "webhooks"    => "true",
-            "success_url" => "http://localhost/ecom-market/success.php",    // Your return destination
+            "success_url" => "http://localhost/ecom-market/success.php",
             "cancel_url"  => "http://localhost/ecom-market/checkout.php"
         ]);
 
-        // 2. Validate that the SDK successfully generated the gateway link
         if (isset($checkout_data['result']) && $checkout_data['result'] === 'success') {
             $redirectUrl = $checkout_data['redirect'];
         } else {
-            throw new Exception("Failed to generate secure checkout link from Safepay SDK.");
+            throw new Exception("Failed to generate secure checkout link.");
         }
 
-        // 3. Clean breakout layer to handle both server headers and fallback JS triggers
         if (!headers_sent()) {
             header('Location: ' . $redirectUrl);
             exit();
@@ -148,8 +129,8 @@ if (isset($_POST['place_safepay_order'])) {
             exit();
         }
     } catch (Exception $e) {
-        echo "<div style='color:red; background:#fff2f2; padding:15px; border:1px solid red; margin:20px; font-family:sans-serif;'>";
-        echo "<strong>Gateway Alignment Interrupted:</strong> " . htmlspecialchars($e->getMessage());
+        echo "<div style='color:red; background:#fff2f2; padding:15px; border:1px solid red; margin:20px;'>";
+        echo "<strong>Gateway Initialization Blocked:</strong> " . htmlspecialchars($e->getMessage());
         echo "</div>";
     }
 }
