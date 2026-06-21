@@ -2,7 +2,7 @@
     session_start();
 }
 ?>
-<div id="preloader-active">
+<!-- <div id="preloader-active">
     <div class="preloader d-flex align-items-center justify-content-center">
         <div class="preloader-inner position-relative">
             <div class="text-center"><img class="mb-10" src="images/favicon.svg" alt="Ecom">
@@ -10,7 +10,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 <div class="topbar top-gray-1000">
     <div class="container-topbar">
         <div class="menu-topbar-left d-none d-xl-block">
