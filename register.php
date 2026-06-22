@@ -4,7 +4,7 @@ include('includes/dbconnect.php');
 include('includes/common_functions.php');
 
 if (isset($_SESSION['username'])) {
-  echo "<script>window.location.href='page-account.html'</script>";
+  echo "<script>window.location.href='account.php'</script>";
   exit();
 }
 
