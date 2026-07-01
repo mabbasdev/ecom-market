@@ -4,11 +4,12 @@ include('includes/dbconnect.php');
 include('includes/common_functions.php');
 
 if (isset($_SESSION['username'])) {
-  echo "<script>window.location.href='page-account.html'</script>";
+  echo "<script>window.location.href='account.php'</script>";
   exit();
 }
 
 $gotocheckout = 0;
+
 if (isset($_GET['checkout']) && $_GET['checkout'] == 1) {
   $gotocheckout = 1;
   $_SESSION['toCheckout'] = 1;
@@ -63,9 +64,11 @@ if (isset($_POST['loginSubmit'])) {
       $goingtocheckout = false;
       if (isset($_POST['gotocheckout']) && $_POST['gotocheckout'] == 1) {
         $goingtocheckout = true;
+        
       } else if ($_SESSION['gotocheckout'] && $_SESSION['gotocheckout'] == 1) {
         $goingtocheckout = true;
       }
+
       if ($goingtocheckout) {
         unset($_SESSION['gotocheckout']);
         $_SESSION['toast-message'] = "Welcome Back! Proceed to Checkout!";

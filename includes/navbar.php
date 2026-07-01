@@ -93,11 +93,11 @@
                             <ul>
                                 <?php
                                 if (isset($_SESSION['username'])) {
-                                    echo '<li><a href="page-account.html">My Account</a></li>
-                                <li><a href="page-account.html">Order Tracking</a></li>
-                                <li><a href="page-account.html">My Orders</a></li>
-                                <li><a href="page-account.html">My Wishlist</a></li>
-                                <li><a href="page-account.html">Setting</a></li>
+                                    echo '<li><a href="account.php">My Account</a></li>
+                                <li><a href="account.php">Order Tracking</a></li>
+                                <li><a href="account.php">My Orders</a></li>
+                                <li><a href="account.php">My Wishlist</a></li>
+                                <li><a href="account.php">Setting</a></li>
                                 <li><a href="' . getAbsoluteLink('logout.php', $baseURL) . '">Sign out</a></li>';
                                 } else {
                                     echo '<li><a href="login.php">Login</a></li>
@@ -256,7 +256,7 @@
                 </div>
                 <div class="mobile-account">
                     <div class="mobile-header-top">
-                        <div class="user-account"><a href="page-account.html"><img src="images/ava_1.png"
+                        <div class="user-account"><a href="account.php"><img src="images/ava_1.png"
                                     alt="Ecom"></a>
                             <div class="content">
                                 <h6 class="user-name">Hello<span class="text-brand"> Steven !</span></h6>
@@ -267,14 +267,14 @@
                     <ul class="mobile-menu">
                         <?php
                         if (isset($_SESSION['username'])) {
-                            echo '<li><a href="page-account.html">My Account</a></li>
-                        <li><a href="page-account.html">Order Tracking</a></li>
-                        <li><a href="page-account.html">My Orders</a></li>
-                        <li><a href="page-account.html">My Wishlist</a></li>
-                        <li><a href="page-account.html">Setting</a></li>
+                            echo '<li><a href="account.php">My Account</a></li>
+                        <li><a href="account.php">Order Tracking</a></li>
+                        <li><a href="account.php">My Orders</a></li>
+                        <li><a href="account.php">My Wishlist</a></li>
+                        <li><a href="account.php">Setting</a></li>
                         <li><a href="' . getAbsoluteLink('logout.php', $baseURL) . '">Sign out</a></li>';
                         } else {
-                            echo '<li><a href="page-account.html">My Account</a></li>
+                            echo '<li><a href="account.php">My Account</a></li>
                         <li><a href="' . getAbsoluteLink('register.php', $baseURL) . '">Order Tracking</a></li>';
                         }
                         ?>
